@@ -77,6 +77,8 @@ library(RColorBrewer)
 library(ggplot2)
 library(sf)
 library(tmap)
+library(patchwork)
+library(grid)
 ```
 
 
@@ -101,25 +103,34 @@ leaflet(data) %>%
 ## Key Patterns
 
 ### Number of Visitors in 2019
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Change column names
+colnames(data)[9] <- "visitor_2019_million"
+colnames(data)[21] <- "winter_sports"
+colnames(data)[22] <- "sea_sports"
+colnames(data)[23] <- "old_town"
+colnames(data)[26] <- "horseback_riding"
+colnames(data)[28] <- "climate_type"
+colnames(data)[30] <- "dec_feb_temp"
+colnames(data)[31] <- "jun_aug_temp"
+colnames(data)[32] <- "near_unesco"
+```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Filter the top 10 cities by number of visitors in 2019
 top10 <- data %>%
-  arrange(desc(`int_visitor_2019 (million)`)) %>%
+  arrange(desc(visitor_2019_million)) %>%
   mutate(rank=row_number()) %>%
   filter(rank<=10)
 
 # Create a bar chart
-ggplot(top10, aes(x=reorder(city_name, `int_visitor_2019 (million)`), y=`int_visitor_2019 (million)`)) +
+ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_million)) +
   geom_bar(stat="identity", fill="#F8D664") +
   coord_flip() +
   labs(x="",
        y="Number of Visitors",
-       title=element_text("Top 10 Destinations by Visitors in 2019",
-                          face="bold",
-                          size=16),
        caption=element_text("Data Source: World Tourism Organization")) +
-  geom_text(aes(label=`int_visitor_2019 (million)`),
+  geom_text(aes(label=visitor_2019_million),
             vjust=0.3,
             hjust=-0.05,
             show.legend=FALSE) +
@@ -134,50 +145,80 @@ ggplot(top10, aes(x=reorder(city_name, `int_visitor_2019 (million)`), y=`int_vis
         plot.title=element_text(hjust=0.5, vjust=5),
         plot.caption=element_text(hjust=0.5),
         plot.margin=unit(c(1,-0.1,0,-0.4), "cm")) +
-  expand_limits(y=c(0,90))
-```
-
-```{r code for winter tem}
-
-cities <- read.csv("data/all_data.csv", header = TRUE)
-
-ggplot(cities, aes(x=`Dec.Feb.Avg.Temp...F.`)) +
-  geom_density(fill="steelblue", alpha=0.5) +
-  xlab("Winter Avg Temp (°F)") +
-  ylab("Density") +
-  ggtitle("Distribution of Winter Avg Temp (°F)") +
-  theme_bw() +
-  theme(axis.line.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank())
-  
+  expand_limits(y=c(0,90)) +
+  plot_annotation(
+    title="Top 10 Destinations by Visitors in 2019",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
+  )
 ```
 
 
-```{r code for summer tem}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Create density plot for displaying temperature distribution
+# Temp for dec to feb
+dec_feb <- ggplot(data, aes(x=dec_feb_temp)) +
+  geom_density(color="white", fill="#F8D664", alpha=0.5) +
+  labs(x="Dec.to Feb. Avg Temp (°F)",
+       y="") +
+  theme_classic() +
+  theme(axis.line.y=element_blank(),
+        axis.line.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y=element_blank(),
+        plot.title=element_text(hjust=0.5, vjust=5),
+        plot.caption=element_text(hjust=0.5),
+        plot.margin=unit(c(1,-0.1,0,-0.4), "cm")
+        )
 
-cities <- read.csv("data/all_data.csv", header = TRUE)
+# Temp for jun to aug
+jun_aug <- ggplot(data, aes(x=jun_aug_temp)) +
+  geom_density(color="white", fill="#F8D664", alpha=1) +
+  labs(x="Jun.to Aug. Avg Temp (°F)",
+       y="") +
+  theme_classic() +
+  theme(axis.line.y=element_blank(),
+        axis.line.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y=element_blank(),
+        plot.title=element_text(hjust=0.5, vjust=5),
+        plot.caption=element_text(hjust=0.5),
+        plot.margin=unit(c(1,-0.1,0,-0.4), "cm")
+        )
 
-ggplot(cities, aes(x=`Jun.Aug.Avg.Temp...F.`)) +
-  geom_density(fill="red", alpha=0.5) +
-  xlab("Summer Avg Temp (°F)") +
-  ylab("Density") +
-  ggtitle("Distribution of Summer Avg Temp (°F)") +
-  theme_bw() +
-  theme(axis.line.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank())
-  
+# Patchwork
+plot <- (dec_feb + jun_aug) +
+  plot_annotation(
+    title="Distribution of the Average Temperature",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
+  )
+plot
 ```
+
+```{r}
+data$climate_type <- tolower(data$climate_type)
+unique(data$climate_type)
+
+climate_group <- data %>%
+  group_by(climate_type) %>%
+  summarize(count=n()) %>%
+  arrange(desc(count)) %>%
+  mutate(rank=row_number()) 
+
+my_colors <- c("#6F98A8", "#D8C0B6", "#FF7F00", "#FFD700", "#81C7D4",
+            "#4F84C4", "#2F4F4F", "#D2691E", "#CD853F", "#F4A460")
+
+ggplot(climate_group, aes(x = reorder(climate_type, rank), y = count)) +
+  geom_bar(fill = my_colors, stat = "identity") +
+  xlab("Climate Type") +
+  ylab("Count") +
+  ggtitle("Distribution of Climate Types") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 60, hjust = 1))
+
+```
+
 
 ```{r code for climate type}
-cities <- read.csv("data/all_data.csv", header = TRUE)
-
-cities$Climate.Type <- ifelse(cities$Climate.Type == "Humid continental", "Humid Continental", cities$Climate.Type)
-cities$Climate.Type <- ifelse(cities$Climate.Type == "Humid subtropical", "Humid Subtropical", cities$Climate.Type)
-cities$Climate.Type <- ifelse(cities$Climate.Type == "Humid subtropical ", "Humid Subtropical", cities$Climate.Type)
-cities$Climate.Type <- ifelse(cities$Climate.Type == "Semi-arid", "Semi-Arid", cities$Climate.Type)
-cities$Climate.Type <- ifelse(cities$Climate.Type == "Tropical ", "Tropical", cities$Climate.Type)
-
-unique(cities$Climate.Type)
 
 cities_ordered <- cities %>%
   group_by(Climate.Type) %>%
