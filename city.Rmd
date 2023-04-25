@@ -14,7 +14,7 @@ Text
 
 ```{r, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 library(devtools)
-devtools::install_github("rstudio/leaflet")
+#devtools::install_github("rstudio/leaflet")
 library(leaflet)
 library(leaflet.extras)
 library(leaflet.extras2)
@@ -143,10 +143,9 @@ plot <- (dec_feb + jun_aug) +
 plot
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Find unique values of climate_type
 data$climate_type <- tolower(data$climate_type)
-unique(data$climate_type)
 
 # Count cities of each climate type
 climate_group <- data %>%
@@ -185,6 +184,7 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
   )
 
 ```
+
 ## Other Patterns
 
 ```{r}
@@ -200,7 +200,7 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 
 ## Text Analysis
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Analyze two text sources separately
 library(stringr)
 library(tm)
@@ -213,28 +213,21 @@ data_t <- data
 #data_t <- data_t %>%
   #filter(beach==0)
 trip_text <- data_t$trip_clean
-wiki_text <- data_t$para_clean
-```
-
-```{r}
-table(data$beach)
-```
 
 
-```{r}
 # To corpus
 docs_trip <- Corpus(VectorSource(trip_text))
-docs_wiki <- Corpus(VectorSource(wiki_text))
+
 
 # Calculate frequencies
 dtm_trip <- DocumentTermMatrix(docs_trip)
-dtm_wiki <- DocumentTermMatrix(docs_wiki)
+
 m_trip <- as.matrix(dtm_trip)
-m_wiki <- as.matrix(dtm_wiki)
+
 freq_trip <- sort(colSums(m_trip), decreasing=TRUE)
-freq_wiki <- sort(colSums(m_wiki), decreasing=TRUE)
+
 df_trip <- data.frame(freq_trip=names(freq_trip), freq=freq_trip)
-df_wiki <- data.frame(freq_wiki=names(freq_wiki), freq=freq_wiki)
+
 
 # Define color for word cloud
 wc.color <- c("#7c6105", "#f2bc0a", "#f9dc7e")
@@ -242,8 +235,7 @@ wc.color <- c("#7c6105", "#f2bc0a", "#f9dc7e")
 # Filter words
 df_trip <- df_trip %>%
   filter(freq>5)
-df_wiki <- df_wiki %>%
-  filter(freq>700)
+
 
 # Define "same length" function
 rep.len <- function(x, length.out) {
@@ -252,31 +244,40 @@ rep.len <- function(x, length.out) {
 ```
 
 
-```{r}
-wordcloud2(df_trip,
+
+
+Text
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#wc1 <- wordcloud2(df_trip,
+           #color=rep.len(wc.color, nrow(df_trip)),
+           #size=0.8,
+           #rotateRatio=0)
+#wc1
+wordcloud2::wordcloud2(df_trip,
            color=rep.len(wc.color, nrow(df_trip)),
-           rotateRatio=0)
-```
-```{r}
-wordcloud2(df_wiki,
-           color=rep.len(wc.color, nrow(df_wiki)),
-           size=1.5,
+           size=0.8,
            rotateRatio=0)
 ```
 
-```{r}
-# Word cloud
-trip_wc <- wordcloud(names(freq_trip), freq_trip, max.words=50, colors=my_colors)
-wiki_sc <- wordcloud(names(freq_wiki), freq_wiki, max.words=50, colors=my_colors)
+Text
 
-# Patchwork
-plot <- (trip_wc + wiki_sc) +
-  #plot_annotation(
-    #title="Word Clouds of Text Data",
-    #theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face="bold"))
-  #)
-plot
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#wiki_text <- data_t$para_clean
+#docs_wiki <- Corpus(VectorSource(wiki_text))
+#dtm_wiki <- DocumentTermMatrix(docs_wiki)
+#m_wiki <- as.matrix(dtm_wiki)
+#freq_wiki <- sort(colSums(m_wiki), decreasing=TRUE)
+#df_wiki <- data.frame(freq_wiki=names(freq_wiki), freq=freq_wiki)
+#df_wiki <- df_wiki %>%
+  #filter(freq>700)
+
+#wc2 <- wordcloud2(df_wiki,
+           #color=rep.len(wc.color, nrow(df_wiki)),
+           #size=1,
+           #rotateRatio=0)
 ```
+
 
 ## Conclusions
 
