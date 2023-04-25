@@ -65,6 +65,8 @@ colnames(data)[32] <- "near_unesco"
 colnames(data)[35] <- "todo_30"
 ```
 
+
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Filter the top 10 cities by number of visitors in 2019
 top10 <- data %>%
@@ -185,16 +187,19 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 
 ```
 
-## Other Patterns
-
-```{r}
-
-```
-
 ## City Clusters
 
 ```{r}
+library(cluster)
+df <- data[c(5, 9:32)]
+```
 
+
+## Patterns within Clusters
+
+```{r}
+#str(df)
+unique(df$climate_type)
 ```
 
 
