@@ -1,0 +1,87 @@
+---
+title: "City Genres"
+output: html_document
+date: ""
+---
+```{css echo=FALSE}
+h1 {
+  text-align: center
+}
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## World Map
+
+Text
+
+```{r, echo=FALSE}
+library(devtools)
+devtools::install_github("rstudio/leaflet")
+library(leaflet)
+library(leaflet.extras)
+library(leaflet.extras2)
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(RColorBrewer)
+library(ggplot2)
+library(sf)
+library(tmap)
+```
+
+
+```{r, echo=FALSE}
+# Import data
+data <- read_csv("data/all_data.csv")
+
+# Create pop-up content
+pop_content <- paste("City Name: ", data$city_name, "<br/>",
+                     "Longitude: ", data$longitude, "<br/>",
+                     "Latitude: ", data$latitude, "<br/>")
+
+# Create a leaflet map
+leaflet(data) %>%
+  setView(lng=mean(data$longitude), lat=mean(data$latitude), zoom=2) %>%
+  addProviderTiles("Stamen.TonerLite") %>%
+  addCircleMarkers(popup=pop_content,
+                   clusterOptions=markerClusterOptions())
+```
+
+
+```{r, echo=FALSE}
+
+```
+
+## Key Patterns
+
+Text
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+## Other Patterns
+
+```{r}
+
+```
+
+## City Clusters
+
+```{r}
+
+```
+
+## Text Analysis
+
+```{r}
+
+```
+
+## Conclusions
+
+
