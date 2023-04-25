@@ -58,11 +58,88 @@ leaflet(data) %>%
 
 ## Key Patterns
 
-hello,dsal;fjdk
+```{r code for bar chart}
+library(ggplot2)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+cities <- read.csv("data/all_data.csv", header = TRUE)
+
+top_cities <- head(cities[order(-cities$int_visitor_2019..million.),], 10)
+
+ggplot(top_cities, aes(x=reorder(city_name, int_visitor_2019..million.), y=int_visitor_2019..million.)) +
+  geom_bar(stat="identity", fill="steelblue") +
+  xlab("City") +
+  ylab("Number of Visitors (in millions)") +
+  ggtitle("Top 10 Cities by Number of Visitors in 2019") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+
 ```
+
+```{r code for winter tem}
+
+cities <- read.csv("data/all_data.csv", header = TRUE)
+
+ggplot(cities, aes(x=`Dec.Feb.Avg.Temp...F.`)) +
+  geom_density(fill="steelblue", alpha=0.5) +
+  xlab("Winter Avg Temp (°F)") +
+  ylab("Density") +
+  ggtitle("Distribution of Winter Avg Temp (°F)") +
+  theme_bw() +
+  theme(axis.line.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  
+```
+
+
+```{r code for summer tem}
+
+cities <- read.csv("data/all_data.csv", header = TRUE)
+
+ggplot(cities, aes(x=`Jun.Aug.Avg.Temp...F.`)) +
+  geom_density(fill="red", alpha=0.5) +
+  xlab("Summer Avg Temp (°F)") +
+  ylab("Density") +
+  ggtitle("Distribution of Summer Avg Temp (°F)") +
+  theme_bw() +
+  theme(axis.line.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  
+```
+
+```{r code for climate type}
+cities <- read.csv("data/all_data.csv", header = TRUE)
+
+cities$Climate.Type <- ifelse(cities$Climate.Type == "Humid continental", "Humid Continental", cities$Climate.Type)
+cities$Climate.Type <- ifelse(cities$Climate.Type == "Humid subtropical", "Humid Subtropical", cities$Climate.Type)
+cities$Climate.Type <- ifelse(cities$Climate.Type == "Humid subtropical ", "Humid Subtropical", cities$Climate.Type)
+cities$Climate.Type <- ifelse(cities$Climate.Type == "Semi-arid", "Semi-Arid", cities$Climate.Type)
+cities$Climate.Type <- ifelse(cities$Climate.Type == "Tropical ", "Tropical", cities$Climate.Type)
+
+unique(cities$Climate.Type)
+
+cities_ordered <- cities %>%
+  group_by(Climate.Type) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+my_colors <- c("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", 
+               "#00FFFF", "#800000", "#008000", "#000080", "#808000")
+
+ggplot(cities_ordered, aes(x = reorder(Climate.Type, count), y = count)) +
+  geom_bar(fill = my_colors, stat = "identity") +
+  xlab("Climate Type") +
+  ylab("Number of Cities") +
+  ggtitle("Distribution of Climate Types") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 60, hjust = 1))
+
+```
+
+
 
 ## Other Patterns
 
