@@ -1,11 +1,57 @@
 ---
 title: "City Genres"
-output: html_document
+output: 
+  html_document:
+    css: styles.css
 date: ""
 ---
 ```{css echo=FALSE}
+element.style {
+}
+.container.svelte-1f7sbq8 {
+  max-width: 800px;
+  width: 100%;
+}
+div {
+  display: block;
+}
+body {
+  color: #333;
+  margin: 0;
+  padding: 8px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+.article-title {
+  font-size: 3em;
+  margin-bottom: 0;
+}
 h1 {
-  text-align: center
+    display: block;
+    font-size: 4em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+:-webkit-any(article, aside, nav, section) h1 {
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+
+p {
+    font-size: 1.2rem;
+    line-height: 1.6em;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
 }
 ```
 
@@ -16,9 +62,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## World Map
 
-Text
+Textddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 library(devtools)
 devtools::install_github("rstudio/leaflet")
 library(leaflet)
@@ -34,7 +80,7 @@ library(tmap)
 ```
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Import data
 data <- read_csv("data/all_data.csv")
 
@@ -47,21 +93,49 @@ pop_content <- paste("City Name: ", data$city_name, "<br/>",
 leaflet(data) %>%
   setView(lng=mean(data$longitude), lat=mean(data$latitude), zoom=2) %>%
   addProviderTiles("Stamen.TonerLite") %>%
-  addCircleMarkers(popup=pop_content,
-                   clusterOptions=markerClusterOptions())
+  addCircleMarkers(popup=pop_content, clusterOptions=markerClusterOptions(),
+                   color="#F8D664")
 ```
 
-
-```{r, echo=FALSE}
-
-```
 
 ## Key Patterns
 
-hello,dsal;fjdk
+### Number of Visitors in 2019
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Filter the top 10 cities by number of visitors in 2019
+top10 <- data %>%
+  arrange(desc(`int_visitor_2019 (million)`)) %>%
+  mutate(rank=row_number()) %>%
+  filter(rank<=10)
+
+# Create a bar chart
+ggplot(top10, aes(x=reorder(city_name, `int_visitor_2019 (million)`), y=`int_visitor_2019 (million)`)) +
+  geom_bar(stat="identity", fill="#F8D664") +
+  coord_flip() +
+  labs(x="",
+       y="Number of Visitors",
+       title=element_text("Top 10 Destinations by Visitors in 2019",
+                          face="bold",
+                          size=16),
+       caption=element_text("Data Source: World Tourism Organization")) +
+  geom_text(aes(label=`int_visitor_2019 (million)`),
+            vjust=0.3,
+            hjust=-0.05,
+            show.legend=FALSE) +
+  theme_classic() +
+  theme(axis.line.y=element_blank(),
+        axis.line.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        plot.title=element_text(hjust=0.5, vjust=5),
+        plot.caption=element_text(hjust=0.5),
+        plot.margin=unit(c(1,-0.1,0,-0.4), "cm")) +
+  expand_limits(y=c(0,90))
+       
 ```
 
 ## Other Patterns
