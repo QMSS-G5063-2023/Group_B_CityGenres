@@ -128,7 +128,7 @@ ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_mil
   geom_bar(stat="identity", fill="#F8D664") +
   coord_flip() +
   labs(x="",
-       y="Number of Visitors",
+       y="Number of Visitors (in million)",
        caption=element_text("Data Source: World Tourism Organization")) +
   geom_text(aes(label=visitor_2019_million),
             vjust=0.3,
@@ -189,7 +189,7 @@ jun_aug <- ggplot(data, aes(x=jun_aug_temp)) +
 plot <- (dec_feb + jun_aug) +
   plot_annotation(
     title="Distribution of the Average Temperature",
-    theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face="bold"))
   )
 plot
 ```
@@ -201,45 +201,37 @@ unique(data$climate_type)
 climate_group <- data %>%
   group_by(climate_type) %>%
   summarize(count=n()) %>%
-  arrange(desc(count)) %>%
-  mutate(rank=row_number()) 
-
-my_colors <- c("#6F98A8", "#D8C0B6", "#FF7F00", "#FFD700", "#81C7D4",
-            "#4F84C4", "#2F4F4F", "#D2691E", "#CD853F", "#F4A460")
-
-ggplot(climate_group, aes(x = reorder(climate_type, rank), y = count)) +
-  geom_bar(fill = my_colors, stat = "identity") +
-  xlab("Climate Type") +
-  ylab("Count") +
-  ggtitle("Distribution of Climate Types") +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        axis.text.x = element_text(angle = 60, hjust = 1))
-
-```
-
-
-```{r code for climate type}
-
-cities_ordered <- cities %>%
-  group_by(Climate.Type) %>%
-  summarize(count = n()) %>%
   arrange(desc(count))
 
-my_colors <- c("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", 
-               "#00FFFF", "#800000", "#008000", "#000080", "#808000")
+my_colors <- c("#fcf1cc", "#fae7a5", "#f9dc7e", "#f7d257", "#f5c830",
+            "#f2bc0a", "#ca9e09", "#a37f07", "#7c6105", "#554303")
 
-ggplot(cities_ordered, aes(x = reorder(Climate.Type, count), y = count)) +
+ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
   geom_bar(fill = my_colors, stat = "identity") +
-  xlab("Climate Type") +
+  coord_flip() +
+  xlab("") +
   ylab("Number of Cities") +
-  ggtitle("Distribution of Climate Types") +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        axis.text.x = element_text(angle = 60, hjust = 1))
+  labs(caption="Data Source: Wikipedia") +
+  geom_text(aes(label=count),
+            vjust=0.3,
+            hjust=-0.1,
+            show.legend=FALSE) +
+  theme_classic() +
+  theme(axis.line.y=element_blank(),
+        axis.line.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        plot.title=element_text(hjust=0.5, vjust=5),
+        plot.caption=element_text(hjust=0.5)) +
+  plot_annotation(
+    title="Distribution of Climate Types",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
+  )
 
 ```
-
-
-
 ## Other Patterns
 
 ```{r}
