@@ -58,7 +58,7 @@ leaflet(data) %>%
 
 ## Key Patterns
 
-Text
+hello,dsal;fjdk
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
