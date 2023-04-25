@@ -1,60 +1,8 @@
 ---
 title: "City Genres"
-output: 
-  html_document:
-    css: styles.css
+output: html_document
 date: ""
 ---
-```{css echo=FALSE}
-element.style {
-}
-.container.svelte-1f7sbq8 {
-  max-width: 800px;
-  width: 100%;
-}
-div {
-  display: block;
-}
-body {
-  color: #333;
-  margin: 0;
-  padding: 8px;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-}
-.article-title {
-  font-size: 3em;
-  margin-bottom: 0;
-}
-h1 {
-    display: block;
-    font-size: 4em;
-    margin-block-start: 0.67em;
-    margin-block-end: 0.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-}
-
-:-webkit-any(article, aside, nav, section) h1 {
-    font-size: 1.5em;
-    margin-block-start: 0.83em;
-    margin-block-end: 0.83em;
-
-p {
-    font-size: 1.2rem;
-    line-height: 1.6em;
-}
-
-p {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-}
-```
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -62,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## World Map
 
-Textddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+Text
 
 ```{r, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 library(devtools)
@@ -114,6 +62,7 @@ colnames(data)[28] <- "climate_type"
 colnames(data)[30] <- "dec_feb_temp"
 colnames(data)[31] <- "jun_aug_temp"
 colnames(data)[32] <- "near_unesco"
+colnames(data)[35] <- "todo_30"
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -158,7 +107,7 @@ ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_mil
 # Temp for dec to feb
 dec_feb <- ggplot(data, aes(x=dec_feb_temp)) +
   geom_density(color="white", fill="#F8D664", alpha=0.5) +
-  labs(x="Dec.to Feb. Avg Temp (°F)",
+  labs(x="Dec. to Feb. Avg Temp (°F)",
        y="") +
   theme_classic() +
   theme(axis.line.y=element_blank(),
@@ -173,7 +122,7 @@ dec_feb <- ggplot(data, aes(x=dec_feb_temp)) +
 # Temp for jun to aug
 jun_aug <- ggplot(data, aes(x=jun_aug_temp)) +
   geom_density(color="white", fill="#F8D664", alpha=1) +
-  labs(x="Jun.to Aug. Avg Temp (°F)",
+  labs(x="Jun. to Aug. Avg Temp (°F)",
        y="") +
   theme_classic() +
   theme(axis.line.y=element_blank(),
@@ -195,17 +144,21 @@ plot
 ```
 
 ```{r}
+# Find unique values of climate_type
 data$climate_type <- tolower(data$climate_type)
 unique(data$climate_type)
 
+# Count cities of each climate type
 climate_group <- data %>%
   group_by(climate_type) %>%
   summarize(count=n()) %>%
   arrange(desc(count))
 
+# Define colors
 my_colors <- c("#fcf1cc", "#fae7a5", "#f9dc7e", "#f7d257", "#f5c830",
             "#f2bc0a", "#ca9e09", "#a37f07", "#7c6105", "#554303")
 
+# Create a bar chart
 ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
   geom_bar(fill = my_colors, stat = "identity") +
   coord_flip() +
@@ -244,10 +197,49 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 
 ```
 
+
 ## Text Analysis
 
 ```{r}
+# Analyze two text sources separately
+library(stringr)
+library(tm)
+library(wordcloud)
+library(wordcloud2)
+library(textstem)
 
+# Import cleaned data
+trip_text <- read_csv("data/trip_text_cleaned.csv")
+wiki_text <- read_csv("data/wiki_text.csv")
+
+# To corpus
+docs_trip <- Corpus(VectorSource(trip_text))
+docs_wiki <- Corpus(VectorSource(wiki_text))
+
+# Calculate frequencies
+dtm_trip <- DocumentTermMatrix(docs_trip)
+dtm_wiki <- DocumentTermMatrix(docs_wiki)
+m_trip <- as.matrix(dtm_trip)
+m_wiki <- as.matrix(dtm_wiki)
+freq_trip <- colSums(m_trip)
+freq_trip <- freq_trip[order(-freq_trip)]
+freq_wiki <- colSums(m_wiki)
+freq_wiki <- freq_wiki[order(-freq_wiki)]
+```
+
+
+```{r}
+# Word cloud
+trip_wc <- wordcloud(names(freq_trip), freq_trip, max.words=50, colors=my_colors)
+wiki_sc <- wordcloud(names(freq_wiki), freq_wiki, max.words=50, colors=my_colors)
+
+# Patchwork
+plot <- (trip_wc + wiki_sc) +
+  #plot_annotation(
+    #title="Word Clouds of Text Data",
+    #theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face="bold"))
+  #)
+plot
 ```
 
 ## Conclusions
