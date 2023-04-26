@@ -14,8 +14,8 @@ img {
 /* Center Leaflet maps */
 .leaflet-container {
   margin: 0 auto;
-  width: 600px;
-  height: 900px;
+  width: 900px;
+  height: 600px;
 }
 
 /* Center word clouds */
