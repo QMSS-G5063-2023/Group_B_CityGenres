@@ -204,6 +204,9 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 ```
 
 ## City Clusters
+
+![](den.png)
+
 "Outdoor Adventure Destinations Cluster" has high values for mountain, beach, forest, hiking, and horseback riding, suggesting that it may be a cluster of destinations that are popular for outdoor activities.
 
 "Water-based Cultural Tourism Destinations Cluster" has high values for beach, island, lake, sea sports, and UNESCO World Heritage Sites, suggesting that it may be a cluster of destinations that are popular for water-based activities and cultural tourism.
@@ -215,10 +218,6 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 "Leisurely Coastal/Tropical Outdoor Activity Destinations Cluster" has high values for beach, island, golf, and sea sports, suggesting that it may be a cluster of destinations that are popular for leisurely outdoor activities in tropical or coastal areas.
 
 "Summer Water Activity Destination Cluster" has only one member, so it may not be meaningful to analyze its distinct features. However, we can see that this destination has high values for beach, lake, and Jun-Aug Average Temperature, indicating that it may be a popular summer destination with a focus on water activities.
-
-
-
-![](den.png)
 
 ## Patterns within Clusters
 
@@ -244,28 +243,93 @@ cluster_colors <- c("#fcf1cc", "#a37f07", "#f5c830", "#7c6105", "#f9dc7e", "#f2b
 bar1 <- ggplot(mean_data, aes(x = factor(cluster), y = resort, fill = factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(x = "Cluster", y = "Resort") +
-  ggtitle("Resort Values by Cluster")
+  ggtitle("Resort") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
 
 bar2 <- ggplot(mean_data, aes(x = factor(cluster), y = `x-sports`, fill = factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(x = "Cluster", y = "X-sports") +
-  ggtitle("Resort Values by Cluster")
+  ggtitle("X-sports") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
 
 bar3 <- ggplot(mean_data, aes(x = factor(cluster), y = mountain, fill = factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "Cluster", y = "mountain") +
-  ggtitle("Resort Values by Cluster")
+  labs(x = "Cluster", y = "Mountain") +
+  ggtitle("Mountain") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
 
-(bar1 + bar2 + bar3 + bar4 + bar5)/
-(bar6 + bar7 + bar8 + bar9 + bar10)
-```
-
-```{r}
-ggplot(mean_data, aes(x = factor(cluster), y = value, fill = factor(cluster))) +
+bar4 <- ggplot(mean_data, aes(x = factor(cluster), y = sea_sports, fill = factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
-  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  labs(x = "Cluster", y = "Value") +
-  ggtitle("Values by Cluster")
+  labs(x = "Cluster", y = "Sea Sports") +
+  ggtitle("Sea Sports") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+
+bar5 <- ggplot(mean_data, aes(x = factor(cluster), y = island, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "Island") +
+  ggtitle("Island") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+
+bar6 <- ggplot(mean_data, aes(x = factor(cluster), y = lake, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "Lake") +
+  ggtitle("Lake") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+
+bar7 <- ggplot(mean_data, aes(x = factor(cluster), y = volcano, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "Volcano") +
+  ggtitle("Volcano") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+
+bar8 <- ggplot(mean_data, aes(x = factor(cluster), y = winter_sports, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "Winter Sports") +
+  ggtitle("Winter Sports") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+
+bar9 <- ggplot(mean_data, aes(x = factor(cluster), y = desert, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "Desert") +
+  ggtitle("Desert") +
+  scale_fill_manual(values = cluster_colors) +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+
+(bar1 + bar2 + bar3 + bar4 + bar5 + bar6 + bar7 + bar8 + bar9)
 ```
 
 
