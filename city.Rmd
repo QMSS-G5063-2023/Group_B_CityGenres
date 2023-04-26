@@ -8,19 +8,18 @@ date: ""
 # City Genre 
 *Jintong Yu, Xianfeng Jiang*
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+In the travel industry, recommendation systems have become increasingly important in enhancing user experience and driving sales and services. These systems can be applied in a variety of ways, such as suggesting flight tickets, hotel stays, activities, or even the next travel destination. Specifically, online travel platforms use recommendation systems based on the concept of destination similarity. For instance, if a user wants to find a destination for sunbathing during the summer break, the system can suggest several alternatives from a group of similar destinations with the "seaside" attribute.
 
+To identify patterns in the attributes of 180 popular travel destinations suggested by Priceline.com, we collected data related to the destinations' attributes from various online sources and trusted websites. Our aim is to use this data to identify inherent patterns in the attributes and apply clustering, a machine learning technique, to explore potential groups within the destinations. This approach can improve the recommendation systems of online travel platforms.
 
-As we embark on this project, we seek to uncover the commonalities and attributes among a list of 180 typical travel destinations suggested by Priceline.com. Our goal is to use topic modeling to discover representative attributes for each group of similar destinations based on a variety of online sources and scraped documents from trusted websites. We will approach this question from multiple perspectives, including examining tabular attributes, general descriptions, and a combination of both to gain a comprehensive understanding of the destinations' characteristics.
+Let us embark on this journey to uncover the inherent patterns in the attributes of the selected travel destinations.
 
-The outcome of this project will be of great value to businesses in the travel industry, such as travel agencies, hotels, and airlines, who can utilize the insights to better target their customers and improve their services. Together, let us begin this important work and uncover the shared attributes and characteristics of these 180 typical travel destinations.
+## Interactive World Map
 
-## World Map
-
-Our interactive world map showcases 180 travel destinations, providing longitude and latitude coordinates for each city. With a simple click, users can explore popular destinations and plan their travel itinerary. The map is also a useful tool for businesses in the travel industry and researchers in tourism. We hope this map inspires travelers and provides valuable insights for the industry.
+The interactive world map showcases the 180 target travel destinations and provides longitude and latitude coordinates for each destination. Using the "Stamen.TonerLite" base map, we can easily identify geographical features, such as whether a destination is inland or seaside, and its corresponding cluster. Users can zoom in on the map to explore members within each geographical cluster. This map is a valuable tool for users to explore potential clusters of the target travel destinations and their corresponding attributes.
 
 ```{r, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 library(devtools)
@@ -39,7 +38,6 @@ library(patchwork)
 library(grid)
 ```
 
-
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Import data
 data <- read_csv("data/data_cluster.csv")
@@ -57,14 +55,18 @@ leaflet(data) %>%
                    color="#F8D664")
 ```
 
+## Three Key Patterns
 
-## Key Patterns
+In our analysis, we delved into three key features that we believe provide a more comprehensive understanding of a travel destination compared to other binary categorical features. These three features include the number of visitors in 2019, temperature, and climate types.
 
-We are pleased to introduce "Key Patterns," a comprehensive analysis of the number of visitors, temperature distribution, and climate type distribution of travel destinations. Our analysis of these key patterns can provide valuable insights for both travelers and businesses in the tourism industry. We hope that "Key Patterns" will be a useful resource for anyone interested in understanding travel trends and patterns.
+By examining the number of visitors in 2019, we gained insight into the level of tourism popularity among the destinations in our study. This information is particularly valuable for travelers who are looking for places that are either off the beaten path or are already established tourist hotspots.
+
+We also considered temperature and climate types as key features, as they are essential factors that can greatly impact a traveler's experience. For instance, some travelers may prefer destinations with cooler temperatures, while others may enjoy warmer climates. Additionally, the type of climate, such as tropical or arid, can influence the availability of outdoor activities or cultural experiences.
 
 ### Number of Visitors in 2019
+The bar chart displays the top 10 travel destinations based on the number of visitors in 2019, offering a clear understanding of the most popular destinations worldwide. This chart is a useful resource not only for travelers seeking inspiration on where to visit next but also for businesses operating in the tourism industry. By analyzing the data presented in the chart, these businesses can make informed decisions on where to invest their resources, such as which locations to prioritize in their marketing campaigns or where to build new accommodations.
 
-Our bar chart presents the top 10 travel destinations based on the number of visitors, providing a clear understanding of the most popular destinations in the world. This chart is a useful resource for travelers and businesses in the tourism industry in making informed decisions about where to visit and invest resources.
+Furthermore, the chart can be used to identify emerging travel trends, such as new destinations that are gaining popularity or previously popular destinations that are experiencing a decline in visitor numbers. This information can be valuable for businesses that want to stay ahead of the curve and anticipate changes in the travel market.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Change column names
@@ -80,9 +82,6 @@ colnames(data)[32] <- "jun_aug_temp"
 colnames(data)[33] <- "near_unesco"
 colnames(data)[36] <- "todo_30"
 ```
-
-
-
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Filter the top 10 cities by number of visitors in 2019
@@ -120,8 +119,8 @@ ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_mil
   )
 ```
 
-
-This visualization presents a comparison of the distribution of average temperature for two different time periods - December to February and June to August. The density plots provide an overview of the temperature distribution for different regions.
+### Temperature
+The density plot shown below presents a comparison of the distribution of average temperature for two different time periods - December to February and June to August, within which the area under the curve represent the proportion of destinations of a specific temperature range. Furthermore, the density plot highlights the most common temperature ranges for each period, which is valuable information for travelers planning their trips. For instance, the graph shows that during the December to February period, most destinations have an average temperature above 25 Fahrenheit degrees, indicating that travelers seeking a warm winter vacation should consider these locations. Similarly, the graph also suggests that during the June to August period, the average temperature of most destinations falls between 70 to 90 Fahrenheit degrees, which could be useful information for those seeking destinations with pleasant summer temperatures. It helps travelers make informed decisions about when and where to travel based on their temperature preferences, and businesses can use this information to tailor their marketing strategies and services to better meet their customers' needs.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Create density plot for displaying temperature distribution
@@ -164,8 +163,8 @@ plot <- (dec_feb + jun_aug) +
 plot
 ```
 
-
-This plot visualizes the distribution of climate types across different cities, with each bar representing the number of cities in a particular climate type. 
+### Climate Types
+The bar chart provides a quick and clear visual representation of the distribution of destinations across different climate types. By grouping destinations into climate types, we can better understand the geographic regions that are most popular among travelers. For instance, it shows that destinations with a humid subtropical climate are more popular than those with a polar or subarctic climate. In addition, this bar chart can provide insights into the types of activities that are most popular among travelers. For example, destinations with a tropical or arid climate may be popular among those seeking outdoor activities such as hiking and sightseeing, while those with a polar climate may be more popular for winter sports like skiing and snowboarding. Businesses in the tourism industry can benefit from this information by focusing their marketing efforts on destinations with the most popular climate types.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Find unique values of climate_type
@@ -211,22 +210,27 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 
 ## City Clusters
 
+We began by conducting an exploratory analysis of the three key features, following which we utilized a hierarchical clustering algorithm to identify potential groups among the target travel destinations. The resulting dendrogram displayed the degree of distinction between clusters, and based on the length of branches, we divided the destinations into six clusters, labeling each with its corresponding cluster.
+
 ![](den.png)
 
-"Outdoor Adventure Destinations Cluster" has high values for mountain, beach, forest, hiking, and horseback riding, suggesting that it may be a cluster of destinations that are popular for outdoor activities.
+To further understand the characteristics of each cluster, we analyzed the mean values of all features. Based on this analysis, we defined the genres of each cluster as follows:
 
-"Water-based Cultural Tourism Destinations Cluster" has high values for beach, island, lake, sea sports, and UNESCO World Heritage Sites, suggesting that it may be a cluster of destinations that are popular for water-based activities and cultural tourism.
+* "Outdoor Adventure Destinations Cluster" includes destinations with high values for mountain, beach, forest, hiking, and horseback riding, indicating that they are popular for outdoor activities.
 
-"Cold Climate Outdoor Activity Destinations Cluster" has high values for lake, forest, winter sports, and horseback riding, suggesting that it may be a cluster of destinations that are popular for outdoor activities in colder climates.
+* "Water-based Cultural Tourism Destinations Cluster" includes destinations with high values for beach, island, lake, sea sports, and UNESCO World Heritage Sites, indicating that they are popular for water-based activities and cultural tourism.
 
-"Mountainous Outdoor Adventure Destinations Cluster" has high values for mountain, lake, forest, hiking, and horseback riding, suggesting that it may be a cluster of destinations that are popular for outdoor activities in mountainous regions.
+* "Cold Climate Outdoor Activity Destinations Cluster" includes destinations with high values for lake, forest, winter sports, and horseback riding, indicating that they are popular for outdoor activities in colder climates.
 
-"Leisurely Coastal/Tropical Outdoor Activity Destinations Cluster" has high values for beach, island, golf, and sea sports, suggesting that it may be a cluster of destinations that are popular for leisurely outdoor activities in tropical or coastal areas.
+* "Mountainous Outdoor Adventure Destinations Cluster" includes destinations with high values for mountain, lake, forest, hiking, and horseback riding, indicating that they are popular for outdoor activities in mountainous regions.
 
-"Summer Water Activity Destination Cluster" has only one member, so it may not be meaningful to analyze its distinct features. However, we can see that this destination has high values for beach, lake, and Jun-Aug Average Temperature, indicating that it may be a popular summer destination with a focus on water activities.
+* "Leisurely Coastal/Tropical Outdoor Activity Destinations Cluster" includes destinations with high values for beach, island, golf, and sea sports, indicating that they are popular for leisurely outdoor activities in tropical or coastal areas.
+
+* "Summer Water Activity Destination Cluster" consists of only one destination, and thus it may not be meaningful to analyze its distinct features. However, we can observe that this destination has high values for beach, lake, and Jun-Aug Average Temperature, suggesting that it may be a popular summer destination with a focus on water activities.
 
 ## Patterns within Clusters
 
+Presented below are wrapped bar charts that illustrate the proportion of destinations in each cluster possessing the corresponding key attributes. To enable easy comparison, we selected only nine categorical features out of the 36, namely "resort," "x-sports," "mountain," "sea_sports," "island," "lake," "volcano," "winter_sports," and "beach." This visualization serves as a tool to verify whether the dominant attributes of a cluster are consistent with the genres defined in the previous section.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Create a list of the top 10 most variant variables
@@ -236,7 +240,6 @@ mean_data <- data %>%
   group_by(cluster) %>% 
   summarize(across(all_of(top_vars), mean))
 ```
-
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # create a custom color palette for the clusters
@@ -334,9 +337,16 @@ bar9 <- ggplot(mean_data, aes(x = factor(cluster), y = desert, fill = factor(clu
 (bar1 + bar2 + bar3 + bar4 + bar5 + bar6 + bar7 + bar8 + bar9)
 ```
 
-
 ## Text Analysis
 
+The text data in our dataset is gathered from reputable sources such as TripAdvisor and Wikipedia. As the layout of the Wikipedia pages of travel destinations varies, we extracted all paragraphs from each page to ensure comprehensive coverage. Regarding TripAdvisor, we exclusively scraped the text pertaining to each destination's attractions to accurately capture its travel attributes.
+
+To further analyze the collected text data, we utilized an interactive word cloud and bar charts. The word cloud displays the most frequently used words to describe the travel destinations, while the bar charts highlight the top five words with the highest frequency for each cluster. These visualizations allow us to identify common attributes associated with each cluster and draw insights into the most popular travel trends and preferences.
+
+### Interactive Word Cloud
+This interactive Word Cloud provides an insightful visualization of the most frequently used words used to describe travel destinations extracted from TripAdvisor webpages. Each word's size is proportional to its frequency of occurrence in the text. Clicking on a word allows you to view the number of times it appears in the text.
+
+For instance, the word "museum" stands out as the most frequently used word in the text, indicating that the majority of the 180 travel destinations possess attractions related to museums. Other notable words include "beach," "mountain," "city," "historic," and "cuisine," which suggest that these features are highly associated with popular travel destinations.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Analyze two text sources separately
@@ -380,8 +390,6 @@ rep.len <- function(x, length.out) {
 }
 ```
 
-This interactive Word Cloud displays the most commonly used words to describe travel destinations. The size of each word reflects its frequency of use, and clicking on a word shows the number of times it was used. 
-
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width = 8, fig.height = 6, , fig.margin = c(0, 0, 0, 0)}
 #wc1 <- wordcloud2(df_trip,
            #color=rep.len(wc.color, nrow(df_trip)),
@@ -397,9 +405,15 @@ htmltools::div(wordcloud2(df_trip, color = rep.len(wc.color, nrow(df_trip)), rot
 #htmltools::div(wordcloud2(df_trip, color = rep.len(wc.color, nrow(df_trip)), backgroundColor = "transparent", rotateRatio = 0, shape = "square", size = 1, minRotation = -pi/2, maxRotation = pi/2, gridSize = 25, fontFamily = "Segoe UI", figPath = NULL), class = "wordcloud2")
 ```
 
+### Common Words within Clusters
+
+The wrapped-up bar charts presented below offer valuable insights into the most frequently used words within each cluster, providing an understanding of the prominent features and attributes that define each group of travel destinations.
+
+For the first four clusters, the most frequently used word is "museum," indicating that these destinations are primarily known for their cultural and historical attractions. This finding is significant as it suggests that tourists who visit these destinations prioritize learning about the history and culture of the places they visit.
+
+On the other hand, the remaining two clusters have "beach" and "park" as their top words, respectively. This implies that these destinations are predominantly associated with natural attractions, such as beaches and parks, and the corresponding outdoor activities that come with them.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-# Word cloud of cluster 4
 library(tidytext)
 wc.color2 <- c("#ccac64", "#f5ae93", "#8d6f5d", "#c5a8aa", "#313d47")
 
@@ -560,9 +574,6 @@ f5 <- ggplot(df_5, aes(x = reorder(freq_5, -freq), y = freq)) +
 
 (f0 + f1 + f2 + f3 + f4 + f5)
 ```
-
-Text
-
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #wiki_text <- data_t$para_clean
 #docs_wiki <- Corpus(VectorSource(wiki_text))
@@ -579,8 +590,10 @@ Text
            #rotateRatio=0)
 ```
 
-
 ## Conclusions
 
-We conducted this project on 180 travel destinations to find commonalities and attributes that make some more similar than others. We collected data from reliable websites, such as TripAdvisor, and used topic modeling to find representative attributes for each group of destinations. We visualized the data using a world map, bar charts, word cloud, and density plot and made them interactive for users to explore. In conclusion, we found distinct clusters of destinations based on their attributes and activities, which can help in marketing for travel agencies and promoting these destinations to travelers. 
+In conclusion, this study aimed to identify patterns in the attributes of 180 popular travel destinations suggested by Priceline.com, by collecting data from various online sources and trusted websites. Through an exploratory data analysis, we identified key features of the destinations, such as outdoor activities, cultural tourism, and cold climate activities. We then applied clustering, a machine learning technique, to identify potential groups within the destinations. The results revealed six distinct clusters, each with unique features and travel genres. This approach has the potential to improve the recommendation systems of online travel platforms by providing a more personalized and relevant experience for users. Overall, this study contributes to the understanding of travel destination attributes and has practical implications for the travel industry.
+
+
+
 

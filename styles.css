@@ -8,11 +8,13 @@ img {
 .plot-container {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 /* Center Leaflet maps */
 .leaflet-container {
   margin: 0 auto;
+  width: 100%;
 }
 
 /* Center word clouds */
