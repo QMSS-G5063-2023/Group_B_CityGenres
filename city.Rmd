@@ -38,6 +38,26 @@ library(patchwork)
 library(grid)
 ```
 
+```{js, echo=FALSE, message=FALSE, warning=FALSE}
+$(document).ready(function(){
+  // Set the width and height of the Leaflet map container
+  $('.leaflet-container').css({
+    'width': '900px',
+    'height': '600px'
+  });
+});
+
+$(document).ready(function(){
+  // Set the width and height of the plot container
+  $('.plot-container').css({
+    'width': '900px',
+    'height': '500px'
+    
+  });
+});
+```
+
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Import data
 data <- read_csv("data/data_cluster.csv")
@@ -83,7 +103,8 @@ colnames(data)[33] <- "near_unesco"
 colnames(data)[36] <- "todo_30"
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, class="plot-container"}
+knitr::asis_output("<div class='plot-container'>")
 # Filter the top 10 cities by number of visitors in 2019
 top10 <- data %>%
   arrange(desc(visitor_2019_million)) %>%
@@ -117,12 +138,14 @@ ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_mil
     title="Top 10 Destinations by Visitors (in millions) in 2019",
     theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
   )
+knitr::asis_output("</div>")
 ```
 
 ### Temperature
 The density plot shown below presents a comparison of the distribution of average temperature for two different time periods - December to February and June to August, within which the area under the curve represent the proportion of destinations of a specific temperature range. Furthermore, the density plot highlights the most common temperature ranges for each period, which is valuable information for travelers planning their trips. For instance, the graph shows that during the December to February period, most destinations have an average temperature above 25 Fahrenheit degrees, indicating that travelers seeking a warm winter vacation should consider these locations. Similarly, the graph also suggests that during the June to August period, the average temperature of most destinations falls between 70 to 90 Fahrenheit degrees, which could be useful information for those seeking destinations with pleasant summer temperatures. It helps travelers make informed decisions about when and where to travel based on their temperature preferences, and businesses can use this information to tailor their marketing strategies and services to better meet their customers' needs.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::asis_output("<div class='plot-container'>")
 # Create density plot for displaying temperature distribution
 # Temp for dec to feb
 dec_feb <- ggplot(data, aes(x=dec_feb_temp)) +
@@ -161,12 +184,14 @@ plot <- (dec_feb + jun_aug) +
     theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face="bold"))
   )
 plot
+knitr::asis_output("</div>")
 ```
 
 ### Climate Types
 The bar chart provides a quick and clear visual representation of the distribution of destinations across different climate types. By grouping destinations into climate types, we can better understand the geographic regions that are most popular among travelers. For instance, it shows that destinations with a humid subtropical climate are more popular than those with a polar or subarctic climate. In addition, this bar chart can provide insights into the types of activities that are most popular among travelers. For example, destinations with a tropical or arid climate may be popular among those seeking outdoor activities such as hiking and sightseeing, while those with a polar climate may be more popular for winter sports like skiing and snowboarding. Businesses in the tourism industry can benefit from this information by focusing their marketing efforts on destinations with the most popular climate types.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::asis_output("<div class='plot-container'>")
 # Find unique values of climate_type
 data$climate_type <- tolower(data$climate_type)
 
@@ -205,7 +230,7 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
     title="Distribution of Climate Types",
     theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
   )
-
+knitr::asis_output("</div>")
 ```
 
 ## City Clusters
@@ -242,6 +267,7 @@ mean_data <- data %>%
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::asis_output("<div class='plot-container'>")
 # create a custom color palette for the clusters
 cluster_colors <- c("#fcf1cc", "#a37f07", "#f5c830", "#7c6105", "#f9dc7e", "#f2bc0a")
 
@@ -335,6 +361,7 @@ bar9 <- ggplot(mean_data, aes(x = factor(cluster), y = desert, fill = factor(clu
         plot.title = element_text(hjust = 0.5))
 
 (bar1 + bar2 + bar3 + bar4 + bar5 + bar6 + bar7 + bar8 + bar9)
+knitr::asis_output("</div>")
 ```
 
 ## Text Analysis
@@ -414,6 +441,7 @@ For the first four clusters, the most frequently used word is "museum," indicati
 On the other hand, the remaining two clusters have "beach" and "park" as their top words, respectively. This implies that these destinations are predominantly associated with natural attractions, such as beaches and parks, and the corresponding outdoor activities that come with them.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::asis_output("<div class='plot-container'>")
 library(tidytext)
 wc.color2 <- c("#ccac64", "#f5ae93", "#8d6f5d", "#c5a8aa", "#313d47")
 
@@ -573,6 +601,7 @@ f5 <- ggplot(df_5, aes(x = reorder(freq_5, -freq), y = freq)) +
   scale_y_continuous(limits = c(0, 12))
 
 (f0 + f1 + f2 + f3 + f4 + f5)
+knitr::asis_output("</div>")
 ```
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #wiki_text <- data_t$para_clean
