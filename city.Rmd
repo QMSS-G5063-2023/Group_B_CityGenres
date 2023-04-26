@@ -1,12 +1,18 @@
 ---
-title: "City Genres"
-output: html_document
+title: ""
+output: 
+  html_document:
+    css: styles.css
 date: ""
 ---
+# City Genre 
+*Jintong Yu, Xianfeng Jiang*
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 
 As we embark on this project, we seek to uncover the commonalities and attributes among a list of 180 typical travel destinations suggested by Priceline.com. Our goal is to use topic modeling to discover representative attributes for each group of similar destinations based on a variety of online sources and scraped documents from trusted websites. We will approach this question from multiple perspectives, including examining tabular attributes, general descriptions, and a combination of both to gain a comprehensive understanding of the destinations' characteristics.
 
@@ -90,8 +96,8 @@ ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_mil
   geom_bar(stat="identity", fill="#F8D664") +
   coord_flip() +
   labs(x="",
-       y="Number of Visitors (in million)",
-       caption=element_text("Data Source: World Tourism Organization")) +
+       y="",
+       caption=element_text("")) +
   geom_text(aes(label=visitor_2019_million),
             vjust=0.3,
             hjust=-0.05,
@@ -109,7 +115,7 @@ ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_mil
         plot.margin=unit(c(1,-0.1,0,-0.4), "cm")) +
   expand_limits(y=c(0,90)) +
   plot_annotation(
-    title="Top 10 Destinations by Visitors in 2019",
+    title="Top 10 Destinations by Visitors (in millions) in 2019",
     theme = theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
   )
 ```
@@ -180,8 +186,8 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
   geom_bar(fill = my_colors, stat = "identity") +
   coord_flip() +
   xlab("") +
-  ylab("Number of Cities") +
-  labs(caption="Data Source: Wikipedia") +
+  ylab("") +
+  labs(caption="") +
   geom_text(aes(label=count),
             vjust=0.3,
             hjust=-0.1,
@@ -222,7 +228,7 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 ## Patterns within Clusters
 
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Create a list of the top 10 most variant variables
 top_vars <- c("resort", "x-sports", "mountain", "sea_sports", "island", "lake", "volcano", "winter_sports", "desert", "beach")
 
@@ -231,12 +237,8 @@ mean_data <- data %>%
   summarize(across(all_of(top_vars), mean))
 ```
 
-```{r}
-str(mean_data)
-```
 
-
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # create a custom color palette for the clusters
 cluster_colors <- c("#fcf1cc", "#a37f07", "#f5c830", "#7c6105", "#f9dc7e", "#f2bc0a")
 
@@ -365,7 +367,7 @@ df_trip <- data.frame(freq_trip=names(freq_trip), freq=freq_trip)
 
 
 # Define color for word cloud
-wc.color <- c("#7c6105", "#f2bc0a", "#f9dc7e")
+wc.color <- c("#475c6c", "#8a8583", "#eed7a1", "#f7efd2", "#cd8b62")
 
 # Filter words
 df_trip <- df_trip %>%
@@ -378,21 +380,185 @@ rep.len <- function(x, length.out) {
 }
 ```
 
-
-
-
 This interactive Word Cloud displays the most commonly used words to describe travel destinations. The size of each word reflects its frequency of use, and clicking on a word shows the number of times it was used. 
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width = 8, fig.height = 6, , fig.margin = c(0, 0, 0, 0)}
 #wc1 <- wordcloud2(df_trip,
            #color=rep.len(wc.color, nrow(df_trip)),
            #size=0.8,
            #rotateRatio=0)
 #wc1
-wordcloud2::wordcloud2(df_trip,
-           color=rep.len(wc.color, nrow(df_trip)),
-           size=0.8,
-           rotateRatio=0)
+#wordcloud2::wordcloud2(df_trip,
+           #color=rep.len(wc.color, nrow(df_trip)),
+           #size=0.8,
+           #rotateRatio=0)
+htmltools::div(wordcloud2(df_trip, color = rep.len(wc.color, nrow(df_trip)), rotateRatio=0))
+#library(htmltools)
+#htmltools::div(wordcloud2(df_trip, color = rep.len(wc.color, nrow(df_trip)), backgroundColor = "transparent", rotateRatio = 0, shape = "square", size = 1, minRotation = -pi/2, maxRotation = pi/2, gridSize = 25, fontFamily = "Segoe UI", figPath = NULL), class = "wordcloud2")
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Word cloud of cluster 4
+library(tidytext)
+wc.color2 <- c("#ccac64", "#f5ae93", "#8d6f5d", "#c5a8aa", "#313d47")
+
+# Cluster 0
+data_0 <- data_t %>%
+  filter(cluster==0)
+text_0 <- data_0$trip_clean
+docs_0 <-Corpus(VectorSource(text_0))
+dtm_0 <- DocumentTermMatrix(docs_0)
+m_0 <- as.matrix(dtm_0)
+freq_0 <- sort(colSums(m_0), decreasing=TRUE)
+df_0 <- data.frame(freq_0=names(freq_0), freq=freq_0)
+df_0 <- df_0[1:5,]
+f0 <- ggplot(df_0, aes(x = reorder(freq_0, -freq), y = freq)) +
+  geom_bar(fill = wc.color2, stat = "identity") + 
+  labs(x = "Words", y = "Frequency") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label=freq),
+            vjust=-0.4,
+            hjust=0.5,
+            show.legend=FALSE) +
+  ggtitle("Cluster 0") +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(0, 80))
+
+# Cluster 1
+data_1 <- data_t %>%
+  filter(cluster==1)
+text_1 <- data_1$trip_clean
+docs_1 <- Corpus(VectorSource(text_1))
+dtm_1 <- DocumentTermMatrix(docs_1)
+m_1 <- as.matrix(dtm_1)
+freq_1 <- sort(colSums(m_1), decreasing=TRUE)
+df_1 <- data.frame(freq_1=names(freq_1), freq=freq_1)
+df_1 <- df_1[1:5,]
+f1 <- ggplot(df_1, aes(x = reorder(freq_1, -freq), y = freq)) +
+  geom_bar(fill = wc.color2, stat = "identity") + 
+  labs(x = "Words", y = "Frequency") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label=freq),
+            vjust=-0.4,
+            hjust=0.5,
+            show.legend=FALSE) +
+  ggtitle("Cluster 1") +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(0, 700))
+
+# Cluster 2
+data_2 <- data_t %>%
+  filter(cluster==2)
+text_2 <- data_2$trip_clean
+docs_2 <- Corpus(VectorSource(text_2))
+dtm_2 <- DocumentTermMatrix(docs_2)
+m_2 <- as.matrix(dtm_2)
+freq_2 <- sort(colSums(m_2), decreasing=TRUE)
+df_2 <- data.frame(freq_2=names(freq_2), freq=freq_2)
+df_2 <- df_2[1:5,]
+f2 <- ggplot(df_2, aes(x = reorder(freq_2, -freq), y = freq)) +
+  geom_bar(fill = wc.color2, stat = "identity") + 
+  labs(x = "Words", y = "Frequency") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label=freq),
+            vjust=-0.4,
+            hjust=0.5,
+            show.legend=FALSE) +
+  ggtitle("Cluster 2") +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(0, 370))
+
+# Cluster 3
+data_3 <- data_t %>%
+  filter(cluster==3)
+text_3 <- data_3$trip_clean
+docs_3 <- Corpus(VectorSource(text_3))
+dtm_3 <- DocumentTermMatrix(docs_3)
+m_3 <- as.matrix(dtm_3)
+freq_3 <- sort(colSums(m_3), decreasing=TRUE)
+df_3 <- data.frame(freq_3=names(freq_3), freq=freq_3)
+df_3 <- df_3[1:5,]
+f3 <- ggplot(df_3, aes(x = reorder(freq_3, -freq), y = freq)) +
+  geom_bar(fill = wc.color2, stat = "identity") + 
+  labs(x = "Words", y = "Frequency") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label=freq),
+            vjust=-0.4,
+            hjust=0.5,
+            show.legend=FALSE) +
+  ggtitle("Cluster 3") +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(0, 190))
+
+# Cluster 4
+data_4 <- data_t %>%
+  filter(cluster==4)
+text_4 <- data_4$trip_clean
+docs_4 <- Corpus(VectorSource(text_4))
+dtm_4 <- DocumentTermMatrix(docs_4)
+m_4 <- as.matrix(dtm_4)
+freq_4 <- sort(colSums(m_4), decreasing=TRUE)
+df_4 <- data.frame(freq_4=names(freq_4), freq=freq_4)
+df_4 <- df_4[1:5,]
+f4 <- ggplot(df_4, aes(x = reorder(freq_4, -freq), y = freq)) +
+  geom_bar(fill = wc.color2, stat = "identity") + 
+  labs(x = "Words", y = "Frequency") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label=freq),
+            vjust=-0.4,
+            hjust=0.5,
+            show.legend=FALSE) +
+  ggtitle("Cluster 4") +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(0, 100))
+
+# Cluster 5
+data_5 <- data_t %>%
+  filter(cluster==5)
+text_5 <- data_5$trip_clean
+docs_5 <- Corpus(VectorSource(text_5))
+dtm_5 <- DocumentTermMatrix(docs_5)
+m_5 <- as.matrix(dtm_5)
+freq_5 <- sort(colSums(m_5), decreasing=TRUE)
+df_5 <- data.frame(freq_5=names(freq_5), freq=freq_5)
+df_5 <- df_5[1:5,]
+f5 <- ggplot(df_5, aes(x = reorder(freq_5, -freq), y = freq)) +
+  geom_bar(fill = wc.color2, stat = "identity") + 
+  labs(x = "Words", y = "Frequency") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label=freq),
+            vjust=-0.4,
+            hjust=0.5,
+            show.legend=FALSE) +
+  ggtitle("Cluster 5") +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(limits = c(0, 12))
+
+(f0 + f1 + f2 + f3 + f4 + f5)
 ```
 
 Text
