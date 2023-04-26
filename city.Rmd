@@ -8,9 +8,13 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+As we embark on this project, we seek to uncover the commonalities and attributes among a list of 180 typical travel destinations suggested by Priceline.com. Our goal is to use topic modeling to discover representative attributes for each group of similar destinations based on a variety of online sources and scraped documents from trusted websites. We will approach this question from multiple perspectives, including examining tabular attributes, general descriptions, and a combination of both to gain a comprehensive understanding of the destinations' characteristics.
+
+The outcome of this project will be of great value to businesses in the travel industry, such as travel agencies, hotels, and airlines, who can utilize the insights to better target their customers and improve their services. Together, let us begin this important work and uncover the shared attributes and characteristics of these 180 typical travel destinations.
+
 ## World Map
 
-Text
+Our interactive world map showcases 180 travel destinations, providing longitude and latitude coordinates for each city. With a simple click, users can explore popular destinations and plan their travel itinerary. The map is also a useful tool for businesses in the travel industry and researchers in tourism. We hope this map inspires travelers and provides valuable insights for the industry.
 
 ```{r, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 library(devtools)
@@ -50,7 +54,12 @@ leaflet(data) %>%
 
 ## Key Patterns
 
+We are pleased to introduce "Key Patterns," a comprehensive analysis of the number of visitors, temperature distribution, and climate type distribution of travel destinations. Our analysis of these key patterns can provide valuable insights for both travelers and businesses in the tourism industry. We hope that "Key Patterns" will be a useful resource for anyone interested in understanding travel trends and patterns.
+
 ### Number of Visitors in 2019
+
+Our bar chart presents the top 10 travel destinations based on the number of visitors, providing a clear understanding of the most popular destinations in the world. This chart is a useful resource for travelers and businesses in the tourism industry in making informed decisions about where to visit and invest resources.
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Change column names
 colnames(data)[10] <- "visitor_2019_million"
@@ -106,6 +115,8 @@ ggplot(top10, aes(x=reorder(city_name, visitor_2019_million), y=visitor_2019_mil
 ```
 
 
+This visualization presents a comparison of the distribution of average temperature for two different time periods - December to February and June to August. The density plots provide an overview of the temperature distribution for different regions.
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Create density plot for displaying temperature distribution
 # Temp for dec to feb
@@ -146,6 +157,9 @@ plot <- (dec_feb + jun_aug) +
   )
 plot
 ```
+
+
+This plot visualizes the distribution of climate types across different cities, with each bar representing the number of cities in a particular climate type. 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Find unique values of climate_type
@@ -190,6 +204,19 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 ```
 
 ## City Clusters
+"Outdoor Adventure Destinations Cluster" has high values for mountain, beach, forest, hiking, and horseback riding, suggesting that it may be a cluster of destinations that are popular for outdoor activities.
+
+"Water-based Cultural Tourism Destinations Cluster" has high values for beach, island, lake, sea sports, and UNESCO World Heritage Sites, suggesting that it may be a cluster of destinations that are popular for water-based activities and cultural tourism.
+
+"Cold Climate Outdoor Activity Destinations Cluster" has high values for lake, forest, winter sports, and horseback riding, suggesting that it may be a cluster of destinations that are popular for outdoor activities in colder climates.
+
+"Mountainous Outdoor Adventure Destinations Cluster" has high values for mountain, lake, forest, hiking, and horseback riding, suggesting that it may be a cluster of destinations that are popular for outdoor activities in mountainous regions.
+
+"Leisurely Coastal/Tropical Outdoor Activity Destinations Cluster" has high values for beach, island, golf, and sea sports, suggesting that it may be a cluster of destinations that are popular for leisurely outdoor activities in tropical or coastal areas.
+
+"Summer Water Activity Destination Cluster" has only one member, so it may not be meaningful to analyze its distinct features. However, we can see that this destination has high values for beach, lake, and Jun-Aug Average Temperature, indicating that it may be a popular summer destination with a focus on water activities.
+
+
 
 ![](den.png)
 
@@ -246,7 +273,7 @@ rep.len <- function(x, length.out) {
 
 
 
-Text
+This interactive Word Cloud displays the most commonly used words to describe travel destinations. The size of each word reflects its frequency of use, and clicking on a word shows the number of times it was used. 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #wc1 <- wordcloud2(df_trip,
@@ -281,4 +308,5 @@ Text
 
 ## Conclusions
 
+We conducted this project on 180 travel destinations to find commonalities and attributes that make some more similar than others. We collected data from reliable websites, such as TripAdvisor, and used topic modeling to find representative attributes for each group of destinations. We visualized the data using a world map, bar charts, word cloud, and density plot and made them interactive for users to explore. In conclusion, we found distinct clusters of destinations based on their attributes and activities, which can help in marketing for travel agencies and promoting these destinations to travelers. 
 
