@@ -32,7 +32,7 @@ library(grid)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Import data
-data <- read_csv("data/all_data.csv")
+data <- read_csv("data/data_cluster.csv")
 
 # Create pop-up content
 pop_content <- paste("City Name: ", data$city_name, "<br/>",
@@ -53,17 +53,19 @@ leaflet(data) %>%
 ### Number of Visitors in 2019
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Change column names
-colnames(data)[9] <- "visitor_2019_million"
-colnames(data)[21] <- "winter_sports"
-colnames(data)[22] <- "sea_sports"
-colnames(data)[23] <- "old_town"
-colnames(data)[26] <- "horseback_riding"
-colnames(data)[28] <- "climate_type"
-colnames(data)[30] <- "dec_feb_temp"
-colnames(data)[31] <- "jun_aug_temp"
-colnames(data)[32] <- "near_unesco"
-colnames(data)[35] <- "todo_30"
+colnames(data)[10] <- "visitor_2019_million"
+colnames(data)[22] <- "winter_sports"
+colnames(data)[23] <- "sea_sports"
+colnames(data)[24] <- "old_town"
+colnames(data)[27] <- "horseback_riding"
+colnames(data)[29] <- "climate_type"
+colnames(data)[30] <- "hemishpere"
+colnames(data)[31] <- "dec_feb_temp"
+colnames(data)[32] <- "jun_aug_temp"
+colnames(data)[33] <- "near_unesco"
+colnames(data)[36] <- "todo_30"
 ```
+
 
 
 
@@ -189,18 +191,11 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 
 ## City Clusters
 
-```{r}
-library(cluster)
-df <- data[c(5, 9:32)]
-```
-
+![](den.png)
 
 ## Patterns within Clusters
 
-```{r}
-#str(df)
-unique(df$climate_type)
-```
+
 
 
 ## Text Analysis
