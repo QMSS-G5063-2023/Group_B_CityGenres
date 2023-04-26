@@ -223,9 +223,54 @@ ggplot(climate_group, aes(x = reorder(climate_type, count), y = count)) +
 ## Patterns within Clusters
 
 
+```{r}
+# Create a list of the top 10 most variant variables
+top_vars <- c("resort", "x-sports", "mountain", "sea_sports", "island", "lake", "volcano", "winter_sports", "desert", "beach")
+
+mean_data <- data %>% 
+  group_by(cluster) %>% 
+  summarize(across(all_of(top_vars), mean))
+```
+
+```{r}
+str(mean_data)
+```
+
+
+```{r}
+# create a custom color palette for the clusters
+cluster_colors <- c("#fcf1cc", "#a37f07", "#f5c830", "#7c6105", "#f9dc7e", "#f2bc0a")
+
+bar1 <- ggplot(mean_data, aes(x = factor(cluster), y = resort, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "Resort") +
+  ggtitle("Resort Values by Cluster")
+
+bar2 <- ggplot(mean_data, aes(x = factor(cluster), y = `x-sports`, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "X-sports") +
+  ggtitle("Resort Values by Cluster")
+
+bar3 <- ggplot(mean_data, aes(x = factor(cluster), y = mountain, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Cluster", y = "mountain") +
+  ggtitle("Resort Values by Cluster")
+
+(bar1 + bar2 + bar3 + bar4 + bar5)/
+(bar6 + bar7 + bar8 + bar9 + bar10)
+```
+
+```{r}
+ggplot(mean_data, aes(x = factor(cluster), y = value, fill = factor(cluster))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
+  labs(x = "Cluster", y = "Value") +
+  ggtitle("Values by Cluster")
+```
 
 
 ## Text Analysis
+
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Analyze two text sources separately
@@ -233,7 +278,6 @@ library(stringr)
 library(tm)
 library(wordcloud)
 library(wordcloud2)
-library(textstem)
 
 # Import cleaned data
 data_t <- data
